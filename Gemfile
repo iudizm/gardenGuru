@@ -28,7 +28,7 @@ gem "jbuilder", "~> 2.7"
 # gem "redis", "~> 4.0"
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem "tzinfo-data", platforms: %i[ mingw mswin x64_mingw jruby ]
+gem "tzinfo-data", platforms: %i[mingw mswin x64_mingw jruby]
 
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", ">= 1.4.4", require: false
@@ -43,21 +43,17 @@ gem "bootsnap", ">= 1.4.4", require: false
 # gem "image_processing", "~> 1.2"
 
 group :development, :test do
-  # 'standardrb' code sniffer and fixer
-  gem "standard"
   gem "rspec-rails", "~> 5.0.0"
-  gem 'factory_girl_rails', '~> 4.7.0'
+  gem "factory_girl_rails", "~> 4.7.0"
   # Start debugger with binding.b [https://github.com/ruby/debug]
-  gem "debug", ">= 1.0.0", platforms: %i[ mri mingw x64_mingw ]
+  gem "debug", ">= 1.0.0", platforms: %i[mri mingw x64_mingw]
 end
 
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console", ">= 4.1.0"
-
   # Add speed badges [https://github.com/MiniProfiler/rack-mini-profiler]
   # gem "rack-mini-profiler", ">= 2.3.3"
-
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
   # gem "spring"
 end
@@ -67,4 +63,12 @@ group :test do
   gem "capybara", ">= 3.26"
   gem "selenium-webdriver"
   gem "webdrivers"
+end
+
+group :rubocop do
+  gem "rubocop", ">= 0.90", require: false
+  gem "rubocop-minitest", require: false
+  gem "rubocop-packaging", require: false
+  gem "rubocop-performance", require: false
+  gem "rubocop-rails", require: false
 end

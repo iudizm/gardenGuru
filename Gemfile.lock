@@ -184,9 +184,17 @@ GEM
       unicode-display_width (>= 1.4.0, < 3.0)
     rubocop-ast (1.13.0)
       parser (>= 3.0.1.1)
+    rubocop-minitest (0.15.2)
+      rubocop (>= 0.90, < 2.0)
+    rubocop-packaging (0.5.1)
+      rubocop (>= 0.89, < 2.0)
     rubocop-performance (1.11.5)
       rubocop (>= 1.7.0, < 2.0)
       rubocop-ast (>= 0.4.0)
+    rubocop-rails (2.12.4)
+      activesupport (>= 4.2.0)
+      rack (>= 1.1)
+      rubocop (>= 1.7.0, < 2.0)
     ruby-progressbar (1.11.0)
     rubyzip (2.3.2)
     selenium-webdriver (4.1.0)
@@ -201,9 +209,6 @@ GEM
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
     sqlite3 (1.4.2)
-    standard (1.4.0)
-      rubocop (= 1.22.3)
-      rubocop-performance (= 1.11.5)
     stimulus-rails (0.7.3)
       rails (>= 6.0.0)
     thor (1.1.0)
@@ -241,9 +246,13 @@ DEPENDENCIES
   puma (~> 5.0)
   rails (~> 7.0.0.alpha2)
   rspec-rails (~> 5.0.0)
+  rubocop (>= 0.90)
+  rubocop-minitest
+  rubocop-packaging
+  rubocop-performance
+  rubocop-rails
   selenium-webdriver
   sqlite3 (~> 1.4)
-  standard
   stimulus-rails (>= 0.4.0)
   turbo-rails (>= 0.7.11)
   tzinfo-data
