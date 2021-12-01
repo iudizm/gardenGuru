@@ -16,23 +16,11 @@ RSpec.describe "/plants", type: :request do
   # Plant. As you add validations to Plant, be sure to
   # adjust the attributes here as well.
   let(:valid_attributes) {
-    {
-      name: "Marijuana (sativa)",
-      scientific_name: "Cannabis sativa",
-      average_height: 180.0,
-      life_cycle: "semestral",
-      is_consumable: true
-    }
+    FactoryGirl.attributes_for(:plant)
   }
 
   let(:invalid_attributes) {
-    {
-      name: "",
-      scientific_name: "",
-      average_height: nil,
-      life_cycle: "",
-      is_consumable: nil
-    }
+    FactoryGirl.attributes_for(:invalid_plant)
   }
 
   describe "GET /index" do

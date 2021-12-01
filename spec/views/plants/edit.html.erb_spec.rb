@@ -2,13 +2,7 @@ require "rails_helper"
 
 RSpec.describe "plants/edit", type: :view do
   before(:each) do
-    @plant = assign(:plant, Plant.create!(
-      name: "MyString",
-      scientific_name: "MyString",
-      average_height: 1.5,
-      life_cycle: "MyString",
-      is_consumable: false
-    ))
+    @plant = assign(:plant, FactoryGirl.create(:plant))
   end
 
   it "renders the edit plant form" do

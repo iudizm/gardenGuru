@@ -2,13 +2,7 @@ require "rails_helper"
 
 RSpec.describe "plants/new", type: :view do
   before(:each) do
-    assign(:plant, Plant.new(
-      name: "MyString",
-      scientific_name: "MyString",
-      average_height: 1.5,
-      life_cycle: "MyString",
-      is_consumable: false
-    ))
+    assign(:plant, FactoryGirl.build(:plant))
   end
 
   it "renders new plant form" do
