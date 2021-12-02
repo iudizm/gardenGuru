@@ -1,10 +1,18 @@
-<p id="notice"><%= notice %></p>
+<% if notice %>
+  <div class="alert alert-primary alert-dismissible fade show" role="alert">
+    <a id="notice"><%= notice %></a>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+<% end %>
 
 <%= render @plant %>
 
-<div>
-  <%= link_to "Edit this plant", edit_plant_path(@plant) %> |
-  <%= link_to "Back to plants", plants_path %>
-
-  <%= button_to "Destroy this plant", plant_path(@plant), method: :delete %>
+<div class="card"> 
+  <div class="card-body">
+    <%= link_to "✏ Edit plant", edit_plant_path(@plant), class: "m-2 btn btn-outline-success btn-sm" %>
+    <%= button_to "🗑 Destroy plant", plant_path(@plant), method: :delete, class: "m-2 btn btn-outline-danger btn-sm " %>
+  </div>
 </div>
+
+<br>
+<%= link_to "Back to plants", plants_path, class: "btn btn-outline-primary btn-sm"%>

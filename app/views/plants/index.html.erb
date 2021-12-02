@@ -1,9 +1,14 @@
-<p id="notice"><%= notice %></p>
+<% if notice %>
+  <div class="alert alert-primary alert-dismissible fade show" role="alert">
+    <a id="notice"><%= notice %></a>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+<% end %>
 
 <h1>My Plants</h1>
+
+<p><%= link_to "New plant", new_plant_path, class: "btn btn-outline-primary btn-lg" %></p>
 
 <div id="plants">
   <%= render @plants %>
 </div>
-
-<%= link_to "New plant", new_plant_path %>

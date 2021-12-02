@@ -1,30 +1,40 @@
-<div id="<%= dom_id plant %>" class="scaffold_record">
-  <p>
-    <strong>Name:</strong>
-    <%= plant.name %>
-  </p>
+<div class="card">
+  <div class="card-body">
+  <div id="<%= dom_id plant %>" class="scaffold_record">
+    <div class="card-header">
+      <h5 class="card-title">
+        <strong><%= plant.name %></strong>
+      </h5>
 
-  <p>
-    <strong>Scientific name:</strong>
-    <%= plant.scientific_name %>
-  </p>
+      <h6 class="card-subtitle mb-2 text-muted">
+        <%= plant.scientific_name %>
+      </h6>
+    </div>
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item">
+        <strong>Average height:</strong>
+        <%= plant.average_height %>
+      </li>
+      
+      <li class="list-group-item">
+        <strong>Life cycle:</strong>
+        <%= plant.life_cycle %>
+      </li>
+      
+      <li class="list-group-item">
+        <% if plant.is_consumable %>
+          <strong>Is consumable</strong>
+        <% else %>
+          <strong>Is  NOT  consumable</strong>
+        <% end %>
+      </li>
 
-  <p>
-    <strong>Average height:</strong>
-    <%= plant.average_height %>
-  </p>
+    </ul>
+    <% if current_page?(plants_path) %>
+      <%= link_to "Show this plant", plant, class: "btn btn-outline-primary btn-sm", style: "width: 100%"%>
+    <% end %>
+  </div>
 
-  <p>
-    <strong>Life cycle:</strong>
-    <%= plant.life_cycle %>
-  </p>
-
-  <p>
-    <strong>Is consumable:</strong>
-    <%= plant.is_consumable %>
-  </p>
-
-  <p>
-    <%= link_to "Show this plant", plant %>
-  </p>
+  </div>
 </div>
+<br>
