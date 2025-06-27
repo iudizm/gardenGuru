@@ -1,18 +1,88 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<!-- Desktop Navigation (hidden on mobile) -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light d-none d-lg-block">
     <div class="container-fluid">
-        <%= link_to "Garden Guru", root_path, class: "navbar-brand"%>
+        <%= link_to "🌱 Garden Guru", root_path, class: "navbar-brand fw-bold"%>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
     <div class="collapse navbar-collapse" id="navbarNavDropdown">
+        <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+                <%= link_to "About", about_path, class: "nav-link" %>
+            </li>
+            <% if user_signed_in? %>
+                <li class="nav-item">
+                    <%= link_to "My Plants", plants_path, class: "nav-link" %>
+                </li>
+                <li class="nav-item">
+                    <%= link_to "Journal", journal_path, class: "nav-link" %>
+                </li>
+                <li class="nav-item">
+                    <%= link_to "Reminders", reminders_path, class: "nav-link" %>
+                </li>
+            <% end %>
+        </ul>
+        
         <ul class="navbar-nav">
-            <li class="nav-item">
-            <%= link_to "About", about_path, class: "nav-link", aria_current: "page"%>
-            </li>
-            <li class="nav-item">
-            <%= link_to "My Plants", plants_path, class: "nav-link" %>
-            </li>
+            <% if user_signed_in? %>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        👤 <%= current_user.display_name %>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><%= link_to "Profile", "#", class: "dropdown-item" %></li>
+                        <li><%= link_to "Settings", "#", class: "dropdown-item" %></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><%= link_to "Sign Out", destroy_user_session_path, method: :delete, class: "dropdown-item" %></li>
+                    </ul>
+                </li>
+            <% else %>
+                <li class="nav-item">
+                    <%= link_to "Sign In", new_user_session_path, class: "nav-link" %>
+                </li>
+                <li class="nav-item">
+                    <%= link_to "Sign Up", new_user_registration_path, class: "btn btn-success btn-sm ms-2" %>
+                </li>
+            <% end %>
         </ul>
     </div>
     </div>
 </nav>
+
+<!-- Mobile Bottom Navigation (visible only on mobile) -->
+<% if user_signed_in? %>
+  <nav class="bottom-nav d-lg-none">
+    <div class="bottom-nav-container">
+      <%= link_to root_path, class: "bottom-nav-item #{current_page?(root_path) ? 'active' : ''}" do %>
+        <i class="bi bi-house-door"></i>
+        <span>Home</span>
+      <% end %>
+      
+      <%= link_to plants_path, class: "bottom-nav-item #{controller_name == 'plants' ? 'active' : ''}" do %>
+        <i class="bi bi-flower1"></i>
+        <span>Plants</span>
+      <% end %>
+      
+      <%= link_to journal_path, class: "bottom-nav-item #{current_page?(journal_path) ? 'active' : ''}" do %>
+        <i class="bi bi-journal-text"></i>
+        <span>Journal</span>
+      <% end %>
+      
+      <%= link_to reminders_path, class: "bottom-nav-item #{current_page?(reminders_path) ? 'active' : ''}" do %>
+        <i class="bi bi-bell"></i>
+        <span>Reminders</span>
+      <% end %>
+      
+      <div class="bottom-nav-item dropdown" data-bs-toggle="dropdown">
+        <i class="bi bi-person-circle"></i>
+        <span>Profile</span>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><%= link_to "My Profile", "#", class: "dropdown-item" %></li>
+          <li><%= link_to "Settings", "#", class: "dropdown-item" %></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><%= link_to "Sign Out", destroy_user_session_path, method: :delete, class: "dropdown-item" %></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+<% end %>

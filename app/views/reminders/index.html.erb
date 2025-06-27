@@ -1,0 +1,126 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h1 class="h2 mb-1">
+        <% if @plant %>
+          🔔 <%= @plant.name %>'s Reminders
+        <% else %>
+          🔔 My Plant Reminders
+        <% end %>
+      </h1>
+      <p class="text-muted mb-0">
+        <% if @plant %>
+          Stay on top of <%= @plant.name.downcase %>'s care schedule
+        <% else %>
+          Never miss important plant care tasks
+        <% end %>
+      </p>
+    </div>
+    <%= link_to @plant ? new_plant_reminder_path(@plant) : "/reminders/new", class: "btn btn-success" do %>
+      <i class="bi bi-plus-lg"></i> New Reminder
+    <% end %>
+  </div>
+
+  <% if @reminders.any? %>
+    <div class="row">
+      <% @reminders.each do |reminder| %>
+        <div class="col-12 mb-3">
+          <div class="card reminder-card fade-in <%= 'border-warning' if reminder.due_date&.to_date == Date.current %>">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <div class="d-flex align-items-center">
+                  <div class="reminder-type-badge me-3">
+                    <% if reminder.schedule_type == 'recurring' %>
+                      <i class="bi bi-arrow-repeat text-info"></i>
+                    <% else %>
+                      <i class="bi bi-bell text-muted"></i>
+                    <% end %>
+                  </div>
+                  <div>
+                    <h5 class="card-title mb-1"><%= reminder.title %></h5>
+                    <% if reminder.plant && !@plant %>
+                      <small class="text-muted">
+                        <i class="bi bi-flower1"></i> <%= reminder.plant.name %>
+                      </small>
+                    <% end %>
+                  </div>
+                </div>
+                <div class="dropdown">
+                  <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="dropdown">
+                    <i class="bi bi-three-dots"></i>
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li><%= link_to "View", reminder_path(reminder), class: "dropdown-item" %></li>
+                    <li><%= link_to "Edit", edit_reminder_path(reminder), class: "dropdown-item" %></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><%= link_to "Delete", reminder_path(reminder), method: :delete, data: { confirm: "Are you sure?" }, class: "dropdown-item text-danger" %></li>
+                  </ul>
+                </div>
+              </div>
+              
+              <% if reminder.description.present? %>
+                <p class="card-text text-muted mb-3">
+                  <%= truncate(reminder.description, length: 120) %>
+                </p>
+              <% end %>
+              
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                  <div class="due-date-info me-3">
+                    <% if reminder.next_due_at %>
+                      <% days_until = (reminder.next_due_at.to_date - Date.current).to_i %>
+                      <% if days_until < 0 %>
+                        <span class="badge bg-danger">
+                          <i class="bi bi-exclamation-triangle"></i> Overdue
+                        </span>
+                      <% elsif days_until == 0 %>
+                        <span class="badge bg-warning text-dark">
+                          <i class="bi bi-clock"></i> Due Today
+                        </span>
+                      <% elsif days_until <= 3 %>
+                        <span class="badge bg-warning text-dark">
+                          <i class="bi bi-clock"></i> Due in <%= days_until %> days
+                        </span>
+                      <% else %>
+                        <span class="badge bg-light text-dark">
+                          <i class="bi bi-calendar3"></i> Due <%= reminder.next_due_at.strftime("%b %d") %>
+                        </span>
+                      <% end %>
+                    <% end %>
+                  </div>
+                  
+                  <% if reminder.schedule_type %>
+                    <span class="badge <%= reminder.schedule_type == 'recurring' ? 'bg-info' : 'bg-secondary' %>">
+                      <%= reminder.schedule_type.titleize %>
+                    </span>
+                  <% end %>
+                </div>
+                
+                <div class="reminder-meta">
+                  <% if reminder.recurrence_rule.present? %>
+                    <span class="badge bg-light text-dark">
+                      <i class="bi bi-arrow-repeat"></i> <%= reminder.recurrence_rule %>
+                    </span>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="text-center py-5">
+      <div class="mb-4">
+        <i class="bi bi-bell display-1 text-muted"></i>
+      </div>
+      <h3 class="text-muted mb-3">No reminders yet</h3>
+      <p class="text-muted mb-4">
+        Set up reminders to never miss important plant care tasks.
+      </p>
+      <%= link_to @plant ? new_plant_reminder_path(@plant) : "/reminders/new", class: "btn btn-success btn-lg" do %>
+        <i class="bi bi-plus-lg"></i> Create First Reminder
+      <% end %>
+    </div>
+  <% end %>
+</div>

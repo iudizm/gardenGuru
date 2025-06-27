@@ -1,69 +1,59 @@
 class PlantsController < ApplicationController
-  before_action :set_plant, only: %i[ show edit update destroy ]
+  before_action :authenticate_user!
+  before_action :set_plant, only: [:show, :edit, :update, :destroy]
 
-  # GET /plants or /plants.json
   def index
-    @plants = Plant.all
+    @plants = current_user.plants.includes(:plant_species).order(created_at: :desc)
   end
 
-  # GET /plants/1 or /plants/1.json
   def show
+    @journal_entries = @plant.journal_entries.includes(:user).order(created_at: :desc).limit(5)
+    @reminders = @plant.reminders.active.order(next_due_at: :asc).limit(5)
+    @health_checks = @plant.plant_health_checks.includes(:user).order(created_at: :desc).limit(3)
   end
 
-  # GET /plants/new
   def new
-    @plant = Plant.new
+    @plant = current_user.plants.build
+    @plant_species = PlantSpecies.order(:common_name)
   end
 
-  # GET /plants/1/edit
-  def edit
-  end
-
-  # POST /plants or /plants.json
   def create
-    @plant = Plant.new(plant_params)
+    @plant = current_user.plants.build(plant_params)
+    @plant_species = PlantSpecies.order(:common_name)
 
-    respond_to do |format|
-      if @plant.save
-        format.html { redirect_to @plant, notice: "Plant was successfully created." }
-        format.json { render :show, status: :created, location: @plant }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @plant.errors, status: :unprocessable_entity }
-      end
+    if @plant.save
+      redirect_to @plant, notice: 'Plant was successfully added to your collection! 🌱'
+    else
+      render :new, status: :unprocessable_entity
     end
   end
 
-  # PATCH/PUT /plants/1 or /plants/1.json
+  def edit
+    @plant_species = PlantSpecies.order(:common_name)
+  end
+
   def update
-    respond_to do |format|
-      if @plant.update(plant_params)
-        format.html { redirect_to @plant, notice: "Plant was successfully updated." }
-        format.json { render :show, status: :ok, location: @plant }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @plant.errors, status: :unprocessable_entity }
-      end
+    if @plant.update(plant_params)
+      redirect_to @plant, notice: 'Plant was successfully updated! 🌿'
+    else
+      @plant_species = PlantSpecies.order(:common_name)
+      render :edit, status: :unprocessable_entity
     end
   end
 
-  # DELETE /plants/1 or /plants/1.json
   def destroy
+    plant_name = @plant.display_name
     @plant.destroy
-    respond_to do |format|
-      format.html { redirect_to plants_url, notice: "Plant was successfully destroyed." }
-      format.json { head :no_content }
-    end
+    redirect_to plants_path, notice: "#{plant_name} was removed from your collection."
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_plant
-      @plant = Plant.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def plant_params
-      params.require(:plant).permit(:name, :scientific_name, :average_height, :life_cycle, :is_consumable)
-    end
+  def set_plant
+    @plant = current_user.plants.find(params[:id])
+  end
+
+  def plant_params
+    params.require(:plant).permit(:name, :plant_species_id, :acquired_on, :photo_url, :notes, :is_public)
+  end
 end

@@ -1,3 +1,66 @@
-<h1>Welcome to Garden Guru!</h1>
+<div class="row justify-content-center">
+  <div class="col-md-8 col-lg-6 text-center">
+    <div class="py-5">
+      <h1 class="display-4 fw-bold text-success mb-4">🌱 Welcome to Garden Guru</h1>
+      <p class="lead mb-4">Your personal plant care companion and social network for plant lovers</p>
+      
+      <% unless user_signed_in? %>
+        <div class="d-grid gap-3 d-sm-flex justify-content-sm-center mb-5">
+          <%= link_to "Get Started", new_user_registration_path, class: "btn btn-success btn-lg px-4 gap-3" %>
+          <%= link_to "Learn More", about_path, class: "btn btn-outline-secondary btn-lg px-4" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
 
-<p>I'm here to help you understand plants!</p>
+<div class="row g-4 py-5">
+  <div class="col-md-4">
+    <div class="card h-100 border-0 shadow-sm">
+      <div class="card-body text-center">
+        <div class="mb-3">
+          <span class="display-6">📝</span>
+        </div>
+        <h5 class="card-title">Plant Journal</h5>
+        <p class="card-text">Track your plants' growth, health, and milestones with detailed journal entries.</p>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-4">
+    <div class="card h-100 border-0 shadow-sm">
+      <div class="card-body text-center">
+        <div class="mb-3">
+          <span class="display-6">⏰</span>
+        </div>
+        <h5 class="card-title">Smart Reminders</h5>
+        <p class="card-text">Never forget to water, fertilize, or repot your plants with personalized reminders.</p>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-4">
+    <div class="card h-100 border-0 shadow-sm">
+      <div class="card-body text-center">
+        <div class="mb-3">
+          <span class="display-6">🔍</span>
+        </div>
+        <h5 class="card-title">Plant Lens</h5>
+        <p class="card-text">Identify plants and diagnose health issues with our AI-powered plant recognition.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<% if user_signed_in? %>
+  <div class="row mt-5">
+    <div class="col-12">
+      <h3 class="mb-4">Quick Actions</h3>
+      <div class="d-grid gap-2 d-md-flex">
+        <%= link_to "Add New Plant", new_plant_path, class: "btn btn-primary" %>
+        <%= link_to "View My Plants", plants_path, class: "btn btn-outline-primary" %>
+        <%= link_to "Check Reminders", "#", class: "btn btn-outline-warning" %>
+      </div>
+    </div>
+  </div>
+<% end %>

@@ -10,19 +10,97 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_26_015401) do
-
+ActiveRecord::Schema[8.0].define(version: 2025_06_27_202803) do
   # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
+  enable_extension "pg_catalog.plpgsql"
 
-  create_table "plants", force: :cascade do |t|
-    t.string "name"
-    t.string "scientific_name"
-    t.float "average_height"
-    t.string "life_cycle"
-    t.boolean "is_consumable"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+  create_table "journal_entries", force: :cascade do |t|
+    t.bigint "plant_id", null: false
+    t.bigint "user_id", null: false
+    t.integer "entry_type"
+    t.text "content"
+    t.string "photo_url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["plant_id"], name: "index_journal_entries_on_plant_id"
+    t.index ["user_id"], name: "index_journal_entries_on_user_id"
   end
 
+  create_table "plant_health_checks", force: :cascade do |t|
+    t.bigint "plant_id", null: false
+    t.bigint "user_id", null: false
+    t.string "photo_url"
+    t.text "diagnosis"
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["plant_id"], name: "index_plant_health_checks_on_plant_id"
+    t.index ["user_id"], name: "index_plant_health_checks_on_user_id"
+  end
+
+  create_table "plant_species", force: :cascade do |t|
+    t.string "scientific_name"
+    t.string "common_name"
+    t.text "description"
+    t.text "care_guide"
+    t.string "photo_url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "plants", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "plant_species_id", null: false
+    t.string "name"
+    t.date "acquired_on"
+    t.string "photo_url"
+    t.text "notes"
+    t.boolean "is_public"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["plant_species_id"], name: "index_plants_on_plant_species_id"
+    t.index ["user_id"], name: "index_plants_on_user_id"
+  end
+
+  create_table "reminders", force: :cascade do |t|
+    t.bigint "plant_id", null: false
+    t.bigint "user_id", null: false
+    t.string "title"
+    t.text "description"
+    t.integer "schedule_type"
+    t.datetime "next_due_at"
+    t.string "recurrence_rule"
+    t.datetime "completed_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["plant_id"], name: "index_reminders_on_plant_id"
+    t.index ["user_id"], name: "index_reminders_on_user_id"
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.string "email", default: "", null: false
+    t.string "encrypted_password", default: "", null: false
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.string "name"
+    t.text "bio"
+    t.string "avatar_url"
+    t.integer "role"
+    t.string "location"
+    t.text "badges"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+  end
+
+  add_foreign_key "journal_entries", "plants"
+  add_foreign_key "journal_entries", "users"
+  add_foreign_key "plant_health_checks", "plants"
+  add_foreign_key "plant_health_checks", "users"
+  add_foreign_key "plants", "plant_species", column: "plant_species_id"
+  add_foreign_key "plants", "users"
+  add_foreign_key "reminders", "plants"
+  add_foreign_key "reminders", "users"
 end

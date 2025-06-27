@@ -1,25 +1,11 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :plant do
-    name "Marijuana (sativa)"
-    scientific_name "Cannabis sativa"
-    average_height 180.0
-    life_cycle "semestral"
-    is_consumable true
-  end
-
-  factory :second_plant, class: "Plant" do
-    name "Sunflower"
-    scientific_name "Helianthus annuus"
-    average_height 190.9
-    life_cycle "annual"
-    is_consumable false
-  end
-
-  factory :invalid_plant, class: "Plant" do
-    name ""
-    scientific_name ""
-    average_height nil
-    life_cycle nil
-    is_consumable nil
+    user { nil }
+    plant_species { nil }
+    name { "MyString" }
+    acquired_on { "2025-06-27" }
+    photo_url { "MyString" }
+    notes { "MyText" }
+    is_public { false }
   end
 end

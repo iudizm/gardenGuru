@@ -1,10 +1,96 @@
-<h1>Editing plant</h1>
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6">
+      <!-- Header -->
+      <div class="d-flex align-items-center mb-4">
+        <%= link_to plant_path(@plant), class: "btn btn-outline-secondary me-3" do %>
+          <i class="bi bi-arrow-left"></i>
+        <% end %>
+        <h1 class="h3 mb-0">Edit <%= @plant.display_name %></h1>
+      </div>
 
-<%= render "form", plant: @plant %>
+      <!-- Form Card -->
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+          <%= form_with model: @plant, local: true, class: "needs-validation", novalidate: true do |form| %>
+            <% if @plant.errors.any? %>
+              <div class="alert alert-danger">
+                <h6>Please fix the following errors:</h6>
+                <ul class="mb-0">
+                  <% @plant.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
 
-<br>
+            <!-- Plant Name -->
+            <div class="mb-4">
+              <%= form.label :name, "Plant Name", class: "form-label fw-bold" %>
+              <%= form.text_field :name, 
+                  class: "form-control form-control-lg #{'is-invalid' if @plant.errors[:name].any?}",
+                  placeholder: "Give your plant a name (e.g., 'Lucky', 'Big Green')",
+                  required: true %>
+              <div class="form-text">This is how you'll refer to your plant</div>
+            </div>
 
-<div>
-  <%= link_to "Show this plant", @plant, class: "btn btn-secondary btn-sm" %>
-  <%= link_to "Back to plants", plants_path, class: "btn btn-secondary btn-sm"%>
+            <!-- Plant Species -->
+            <div class="mb-4">
+              <%= form.label :plant_species_id, "Plant Type", class: "form-label fw-bold" %>
+              <%= form.collection_select :plant_species_id, 
+                  @plant_species, 
+                  :id, 
+                  :display_name, 
+                  { prompt: "Select a plant type..." },
+                  { class: "form-select form-select-lg #{'is-invalid' if @plant.errors[:plant_species_id].any?}", required: true } %>
+              <div class="form-text">Choose the type of plant you're adding</div>
+            </div>
+
+            <!-- Acquired Date -->
+            <div class="mb-4">
+              <%= form.label :acquired_on, "When did you get this plant?", class: "form-label fw-bold" %>
+              <%= form.date_field :acquired_on, 
+                  class: "form-control form-control-lg #{'is-invalid' if @plant.errors[:acquired_on].any?}",
+                  required: true %>
+              <div class="form-text">This helps track your plant's age and growth</div>
+            </div>
+
+            <!-- Photo URL -->
+            <div class="mb-4">
+              <%= form.label :photo_url, "Plant Photo URL", class: "form-label fw-bold" %>
+              <%= form.url_field :photo_url, 
+                  class: "form-control form-control-lg",
+                  placeholder: "https://example.com/plant-photo.jpg" %>
+              <div class="form-text">Optional: Add a photo of your plant</div>
+            </div>
+
+            <!-- Notes -->
+            <div class="mb-4">
+              <%= form.label :notes, "Notes", class: "form-label fw-bold" %>
+              <%= form.text_area :notes, 
+                  class: "form-control",
+                  rows: 3,
+                  placeholder: "Any special notes about your plant..." %>
+              <div class="form-text">Optional: Add any special care instructions or notes</div>
+            </div>
+
+            <!-- Public/Private Toggle -->
+            <div class="mb-4">
+              <div class="form-check form-switch">
+                <%= form.check_box :is_public, class: "form-check-input" %>
+                <%= form.label :is_public, "Make this plant public", class: "form-check-label" %>
+              </div>
+              <div class="form-text">Public plants can be seen by other users in the community</div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-grid gap-2">
+              <%= form.submit "Update Plant", class: "btn btn-success btn-lg" %>
+              <%= link_to "Cancel", plant_path(@plant), class: "btn btn-outline-secondary" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

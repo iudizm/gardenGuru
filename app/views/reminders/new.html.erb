@@ -1,0 +1,104 @@
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6">
+      <div class="d-flex align-items-center mb-4">
+        <%= link_to @plant ? plant_reminders_path(@plant) : "/reminders", class: "btn btn-outline-secondary me-3" do %>
+          <i class="bi bi-arrow-left"></i>
+        <% end %>
+        <div>
+          <h1 class="h2 mb-1">New Reminder</h1>
+          <% if @plant %>
+            <p class="text-muted mb-0">Set a reminder for <%= @plant.name %></p>
+          <% end %>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <%= form_with model: @reminder, url: @plant ? plant_reminders_path(@plant) : "/reminders", local: true do |form| %>
+            <% if @reminder.errors.any? %>
+              <div class="alert alert-danger">
+                <h6><%= pluralize(@reminder.errors.count, "error") %> prohibited this reminder from being saved:</h6>
+                <ul class="mb-0">
+                  <% @reminder.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
+
+            <div class="mb-3">
+              <%= form.label :title, class: "form-label" do %>
+                <i class="bi bi-pencil"></i> Reminder Title
+              <% end %>
+              <%= form.text_field :title, class: "form-control", placeholder: "e.g., Water the monstera" %>
+            </div>
+
+            <div class="mb-3">
+              <%= form.label :description, class: "form-label" do %>
+                <i class="bi bi-journal-text"></i> Description
+              <% end %>
+              <%= form.text_area :description, 
+                  class: "form-control", 
+                  rows: 3, 
+                  placeholder: "Describe what needs to be done..." %>
+            </div>
+
+            <% unless @plant %>
+              <div class="mb-3">
+                <%= form.label :plant_id, class: "form-label" do %>
+                  <i class="bi bi-flower1"></i> Plant (Optional)
+                <% end %>
+                <%= form.collection_select :plant_id, 
+                    current_user.plants.order(:name), 
+                    :id, 
+                    :name, 
+                    { prompt: "Select a plant (optional)" }, 
+                    { class: "form-select" } %>
+              </div>
+            <% end %>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <%= form.label :next_due_at, class: "form-label" do %>
+                  <i class="bi bi-calendar3"></i> Due Date & Time
+                <% end %>
+                <%= form.datetime_local_field :next_due_at, 
+                    class: "form-control", 
+                    min: DateTime.current %>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <%= form.label :schedule_type, class: "form-label" do %>
+                  <i class="bi bi-arrow-repeat"></i> Schedule Type
+                <% end %>
+                <%= form.select :schedule_type, 
+                    options_for_select([
+                      ['One-time', 'once'],
+                      ['Recurring', 'recurring']
+                    ], @reminder.schedule_type), 
+                    { prompt: "Select schedule type" }, 
+                    { class: "form-select" } %>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <%= form.label :recurrence_rule, class: "form-label" do %>
+                <i class="bi bi-clock"></i> Recurrence Rule (if recurring)
+              <% end %>
+              <%= form.text_field :recurrence_rule, 
+                  class: "form-control", 
+                  placeholder: "e.g., every 7 days, every 2 weeks, every month" %>
+              <small class="form-text text-muted">Leave empty for one-time reminders</small>
+            </div>
+
+            <div class="d-grid gap-2">
+              <%= form.submit "Create Reminder", class: "btn btn-success btn-lg" %>
+              <%= link_to @plant ? plant_reminders_path(@plant) : "/reminders", class: "btn btn-outline-secondary" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

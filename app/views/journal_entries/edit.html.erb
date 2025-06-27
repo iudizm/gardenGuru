@@ -1,0 +1,74 @@
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6">
+      <div class="d-flex align-items-center mb-4">
+        <%= link_to journal_entry_path(@journal_entry), class: "btn btn-outline-secondary me-3" do %>
+          <i class="bi bi-arrow-left"></i>
+        <% end %>
+        <div>
+          <h1 class="h2 mb-1">Edit Journal Entry</h1>
+          <% if @journal_entry.plant %>
+            <p class="text-muted mb-0">Updating entry for <%= @journal_entry.plant.name %></p>
+          <% end %>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <%= form_with model: @journal_entry, local: true do |form| %>
+            <% if @journal_entry.errors.any? %>
+              <div class="alert alert-danger">
+                <h6><%= pluralize(@journal_entry.errors.count, "error") %> prohibited this entry from being saved:</h6>
+                <ul class="mb-0">
+                  <% @journal_entry.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
+
+            <div class="mb-3">
+              <%= form.label :entry_type, class: "form-label" do %>
+                <i class="bi bi-tag"></i> Entry Type
+              <% end %>
+              <%= form.select :entry_type, 
+                  options_for_select([
+                    ['Note', 'note'],
+                    ['Photo', 'photo'],
+                    ['Milestone', 'milestone'],
+                    ['Health Check', 'health_check']
+                  ], @journal_entry.entry_type), 
+                  { prompt: "Select entry type" }, 
+                  { class: "form-select" } %>
+            </div>
+
+            <div class="mb-3">
+              <%= form.label :content, class: "form-label" do %>
+                <i class="bi bi-journal-text"></i> Entry Details
+              <% end %>
+              <%= form.text_area :content, 
+                  class: "form-control", 
+                  rows: 4, 
+                  placeholder: "Describe what you did, observed, or any notes about your plant care..." %>
+            </div>
+
+            <div class="mb-3">
+              <%= form.label :photo_url, class: "form-label" do %>
+                <i class="bi bi-camera"></i> Photo URL (Optional)
+              <% end %>
+              <%= form.text_field :photo_url, 
+                  class: "form-control", 
+                  placeholder: "https://example.com/photo.jpg" %>
+              <div class="form-text">Add a URL to a photo of your plant</div>
+            </div>
+
+            <div class="d-grid gap-2">
+              <%= form.submit "Update Journal Entry", class: "btn btn-success btn-lg" %>
+              <%= link_to journal_entry_path(@journal_entry), class: "btn btn-outline-secondary" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

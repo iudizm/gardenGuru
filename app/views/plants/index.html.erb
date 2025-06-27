@@ -1,14 +1,134 @@
-<% if notice %>
-  <div class="alert alert-primary alert-dismissible fade show" role="alert">
-    <a id="notice"><%= notice %></a>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+<div class="container-fluid px-0">
+  <!-- Header Section -->
+  <div class="bg-success text-white py-4 mb-4">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col">
+          <h1 class="h3 mb-0">🌱 My Plants</h1>
+          <p class="mb-0 text-success-light">You have <%= @plants.count %> plants in your collection</p>
+        </div>
+        <div class="col-auto">
+          <%= link_to new_plant_path, class: "btn btn-light btn-sm" do %>
+            <i class="bi bi-plus-circle"></i> Add Plant
+          <% end %>
+        </div>
+      </div>
+    </div>
   </div>
-<% end %>
 
-<h1>My Plants</h1>
+  <!-- Search and Filter Section -->
+  <div class="container mb-4">
+    <div class="row">
+      <div class="col-12">
+        <div class="input-group">
+          <span class="input-group-text bg-light border-end-0">
+            <i class="bi bi-search"></i>
+          </span>
+          <input type="text" class="form-control border-start-0" id="plantSearch" placeholder="Search your plants...">
+        </div>
+      </div>
+    </div>
+  </div>
 
-<p><%= link_to "New plant", new_plant_path, class: "btn btn-outline-primary btn-lg" %></p>
+  <!-- Plants Grid -->
+  <div class="container">
+    <% if @plants.any? %>
+      <div class="row g-3" id="plantsGrid">
+        <% @plants.each do |plant| %>
+          <div class="col-12 col-sm-6 col-lg-4 plant-card" data-plant-name="<%= plant.display_name.downcase %>">
+            <div class="card h-100 border-0 shadow-sm">
+              <!-- Plant Image -->
+              <div class="position-relative">
+                <% if plant.has_photo? %>
+                  <%= image_tag plant.photo_url, class: "card-img-top", style: "height: 200px; object-fit: cover;" %>
+                <% else %>
+                  <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                    <span class="display-4 text-muted">🌿</span>
+                  </div>
+                <% end %>
+                
+                <!-- Status Badge -->
+                <div class="position-absolute top-0 end-0 m-2">
+                  <% if plant.overdue_reminders.any? %>
+                    <span class="badge bg-danger">⚠️ Overdue</span>
+                  <% elsif plant.active_reminders.due_soon.any? %>
+                    <span class="badge bg-warning">⏰ Due Soon</span>
+                  <% end %>
+                </div>
+              </div>
 
-<div id="plants">
-  <%= render @plants %>
+              <!-- Card Body -->
+              <div class="card-body d-flex flex-column">
+                <h5 class="card-title mb-2"><%= plant.display_name %></h5>
+                <p class="card-text text-muted small mb-2">
+                  <%= plant.plant_species.common_name %>
+                </p>
+                
+                <!-- Plant Stats -->
+                <div class="row text-center mb-3">
+                  <div class="col-4">
+                    <div class="small text-muted">Age</div>
+                    <div class="fw-bold"><%= plant.age_in_months %>m</div>
+                  </div>
+                  <div class="col-4">
+                    <div class="small text-muted">Reminders</div>
+                    <div class="fw-bold"><%= plant.active_reminders.count %></div>
+                  </div>
+                  <div class="col-4">
+                    <div class="small text-muted">Entries</div>
+                    <div class="fw-bold"><%= plant.journal_entries.count %></div>
+                  </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="mt-auto">
+                  <div class="d-grid gap-2">
+                    <%= link_to "View Details", plant_path(plant), class: "btn btn-outline-success btn-sm" %>
+                    <div class="btn-group btn-group-sm" role="group">
+                      <%= link_to "Edit", edit_plant_path(plant), class: "btn btn-outline-secondary" %>
+                      <%= link_to "Delete", plant_path(plant), 
+                          method: :delete, 
+                          data: { confirm: "Are you sure you want to remove #{plant.display_name}?" },
+                          class: "btn btn-outline-danger" %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <!-- Empty State -->
+      <div class="text-center py-5">
+        <div class="display-1 text-muted mb-3">🌱</div>
+        <h3 class="text-muted mb-3">No plants yet!</h3>
+        <p class="text-muted mb-4">Start your plant collection by adding your first plant.</p>
+        <%= link_to new_plant_path, class: "btn btn-success btn-lg" do %>
+          <i class="bi bi-plus-circle"></i> Add Your First Plant
+        <% end %>
+      </div>
+    <% end %>
+  </div>
 </div>
+
+<!-- Search JavaScript -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const searchInput = document.getElementById('plantSearch');
+  const plantCards = document.querySelectorAll('.plant-card');
+  
+  searchInput.addEventListener('input', function() {
+    const searchTerm = this.value.toLowerCase();
+    
+    plantCards.forEach(card => {
+      const plantName = card.dataset.plantName;
+      if (plantName.includes(searchTerm)) {
+        card.style.display = 'block';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  });
+});
+</script>

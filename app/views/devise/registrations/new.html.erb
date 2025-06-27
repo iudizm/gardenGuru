@@ -1,0 +1,149 @@
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-6 col-lg-5">
+      <!-- Header -->
+      <div class="text-center mb-4">
+        <h1 class="h2 text-success mb-2">🌱 Join Garden Guru</h1>
+        <p class="text-muted">Start your plant care journey today</p>
+      </div>
+
+      <!-- Registration Form -->
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+          <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "needs-validation", novalidate: true }) do |f| %>
+            <%= render "devise/shared/error_messages", resource: resource %>
+
+            <!-- Step 1: Basic Info -->
+            <div id="step1">
+              <h5 class="card-title mb-4">Step 1: Your Information</h5>
+              
+              <!-- Name Field -->
+              <div class="mb-3">
+                <%= f.label :name, "Full Name", class: "form-label fw-bold" %>
+                <%= f.text_field :name, 
+                    class: "form-control form-control-lg #{'is-invalid' if resource.errors[:name].any?}",
+                    placeholder: "Enter your full name",
+                    required: true,
+                    autofocus: true %>
+                <div class="form-text">This is how other users will see you</div>
+              </div>
+
+              <!-- Email Field -->
+              <div class="mb-3">
+                <%= f.label :email, "Email Address", class: "form-label fw-bold" %>
+                <%= f.email_field :email, 
+                    class: "form-control form-control-lg #{'is-invalid' if resource.errors[:email].any?}",
+                    placeholder: "your.email@example.com",
+                    required: true %>
+                <div class="form-text">We'll never share your email</div>
+              </div>
+
+              <div class="d-grid">
+                <button type="button" class="btn btn-success btn-lg" onclick="showStep2()">
+                  Continue <i class="bi bi-arrow-right"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Step 2: Password & Preferences -->
+            <div id="step2" style="display: none;">
+              <h5 class="card-title mb-4">Step 2: Security & Preferences</h5>
+              
+              <!-- Password Field -->
+              <div class="mb-3">
+                <%= f.label :password, "Password", class: "form-label fw-bold" %>
+                <%= f.password_field :password, 
+                    class: "form-control form-control-lg #{'is-invalid' if resource.errors[:password].any?}",
+                    placeholder: "Create a strong password",
+                    required: true,
+                    minlength: 6 %>
+                <% if @minimum_password_length %>
+                  <div class="form-text">Minimum <%= @minimum_password_length %> characters</div>
+                <% end %>
+              </div>
+
+              <!-- Password Confirmation -->
+              <div class="mb-3">
+                <%= f.label :password_confirmation, "Confirm Password", class: "form-label fw-bold" %>
+                <%= f.password_field :password_confirmation, 
+                    class: "form-control form-control-lg #{'is-invalid' if resource.errors[:password_confirmation].any?}",
+                    placeholder: "Confirm your password",
+                    required: true %>
+              </div>
+
+              <!-- Bio Field -->
+              <div class="mb-3">
+                <%= f.label :bio, "Bio (Optional)", class: "form-label fw-bold" %>
+                <%= f.text_area :bio, 
+                    class: "form-control",
+                    rows: 3,
+                    placeholder: "Tell us about your plant journey..." %>
+                <div class="form-text">Share your experience with plants</div>
+              </div>
+
+              <!-- Location Field -->
+              <div class="mb-4">
+                <%= f.label :location, "Location (Optional)", class: "form-label fw-bold" %>
+                <%= f.text_field :location, 
+                    class: "form-control form-control-lg",
+                    placeholder: "City, Country" %>
+                <div class="form-text">Help connect with local plant lovers</div>
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="d-grid gap-2">
+                <%= f.submit "Create Account", class: "btn btn-success btn-lg" %>
+                <button type="button" class="btn btn-outline-secondary" onclick="showStep1()">
+                  <i class="bi bi-arrow-left"></i> Back
+                </button>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Sign In Link -->
+      <div class="text-center mt-4">
+        <p class="text-muted mb-0">
+          Already have an account? 
+          <%= link_to "Sign in", new_session_path(resource_name), class: "text-success fw-bold" %>
+        </p>
+      </div>
+
+      <!-- Benefits -->
+      <div class="card border-0 bg-light mt-4">
+        <div class="card-body">
+          <h6 class="card-title">🎉 What you'll get:</h6>
+          <ul class="card-text small mb-0">
+            <li>Track all your plants in one place</li>
+            <li>Get personalized care reminders</li>
+            <li>Connect with other plant lovers</li>
+            <li>Access expert care guides</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function showStep2() {
+  // Validate step 1
+  const name = document.getElementById('user_name').value;
+  const email = document.getElementById('user_email').value;
+  
+  if (!name || !email) {
+    alert('Please fill in all required fields.');
+    return;
+  }
+  
+  // Show step 2
+  document.getElementById('step1').style.display = 'none';
+  document.getElementById('step2').style.display = 'block';
+}
+
+function showStep1() {
+  document.getElementById('step2').style.display = 'none';
+  document.getElementById('step1').style.display = 'block';
+}
+</script>

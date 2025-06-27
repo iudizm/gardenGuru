@@ -4,8 +4,10 @@ default: &default
   adapter: postgresql
   encoding: unicode
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  username: <%= ENV["GARDENGURU_DATABASE_USERNAME"] %>
-  password: <%= ENV["GARDENGURU_DATABASE_PASSWORD"] %>
+  username: postgres
+  password: postgres
+  host: localhost
+  port: 5432
 
 development:
   <<: *default
@@ -21,3 +23,5 @@ test:
 production:
   <<: *default
   database: gardenGuru_production
+  username: <%= ENV["GARDENGURU_DATABASE_USERNAME"] %>
+  password: <%= ENV["GARDENGURU_DATABASE_PASSWORD"] %>

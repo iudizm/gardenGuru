@@ -1,0 +1,86 @@
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-6 col-lg-5">
+      <!-- Header -->
+      <div class="text-center mb-4">
+        <h1 class="h2 text-success mb-2">🌱 Welcome Back</h1>
+        <p class="text-muted">Sign in to continue your plant care journey</p>
+      </div>
+
+      <!-- Sign In Form -->
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+          <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: "needs-validation", novalidate: true }) do |f| %>
+            
+            <!-- Email Field -->
+            <div class="mb-3">
+              <%= f.label :email, "Email Address", class: "form-label fw-bold" %>
+              <%= f.email_field :email, 
+                  class: "form-control form-control-lg #{'is-invalid' if resource.errors[:email].any?}",
+                  placeholder: "your.email@example.com",
+                  required: true,
+                  autofocus: true %>
+            </div>
+
+            <!-- Password Field -->
+            <div class="mb-3">
+              <%= f.label :password, "Password", class: "form-label fw-bold" %>
+              <%= f.password_field :password, 
+                  class: "form-control form-control-lg #{'is-invalid' if resource.errors[:password].any?}",
+                  placeholder: "Enter your password",
+                  required: true %>
+            </div>
+
+            <!-- Remember Me -->
+            <div class="mb-3">
+              <div class="form-check">
+                <%= f.check_box :remember_me, class: "form-check-input" %>
+                <%= f.label :remember_me, "Remember me", class: "form-check-label" %>
+              </div>
+            </div>
+
+            <!-- Error Messages -->
+            <% if resource.errors.any? %>
+              <div class="alert alert-danger">
+                <h6>Sign in failed:</h6>
+                <ul class="mb-0">
+                  <% resource.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
+
+            <!-- Submit Button -->
+            <div class="d-grid mb-3">
+              <%= f.submit "Sign In", class: "btn btn-success btn-lg" %>
+            </div>
+          <% end %>
+
+          <!-- Forgot Password Link -->
+          <div class="text-center">
+            <%= link_to "Forgot your password?", new_password_path(resource_name), class: "text-success small" %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sign Up Link -->
+      <div class="text-center mt-4">
+        <p class="text-muted mb-0">
+          Don't have an account? 
+          <%= link_to "Sign up", new_registration_path(resource_name), class: "text-success fw-bold" %>
+        </p>
+      </div>
+
+      <!-- Demo Account Info -->
+      <div class="card border-0 bg-light mt-4">
+        <div class="card-body">
+          <h6 class="card-title">💡 New to Garden Guru?</h6>
+          <p class="card-text small mb-0">
+            Create an account to start tracking your plants, set reminders, and connect with other plant lovers!
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

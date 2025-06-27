@@ -1,18 +1,206 @@
-<% if notice %>
-  <div class="alert alert-primary alert-dismissible fade show" role="alert">
-    <a id="notice"><%= notice %></a>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+<div class="container-fluid px-0">
+  <!-- Plant Header -->
+  <div class="position-relative">
+    <% if @plant.has_photo? %>
+      <%= image_tag @plant.photo_url, class: "w-100", style: "height: 300px; object-fit: cover;" %>
+    <% else %>
+      <div class="w-100 bg-light d-flex align-items-center justify-content-center" style="height: 300px;">
+        <span class="display-1 text-muted">🌿</span>
+      </div>
+    <% end %>
+    
+    <!-- Overlay with plant info -->
+    <div class="position-absolute bottom-0 start-0 w-100" style="background: linear-gradient(transparent, rgba(0,0,0,0.7));">
+      <div class="container text-white pb-3">
+        <div class="d-flex justify-content-between align-items-end">
+          <div>
+            <h1 class="h2 mb-1"><%= @plant.display_name %></h1>
+            <p class="mb-0 opacity-75"><%= @plant.plant_species.common_name %></p>
+          </div>
+          <div class="text-end">
+            <% if @plant.overdue_reminders.any? %>
+              <span class="badge bg-danger">⚠️ Overdue</span>
+            <% elsif @plant.active_reminders.due_soon.any? %>
+              <span class="badge bg-warning">⏰ Due Soon</span>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Back button -->
+    <div class="position-absolute top-0 start-0 m-3">
+      <%= link_to plants_path, class: "btn btn-light btn-sm" do %>
+        <i class="bi bi-arrow-left"></i> Back
+      <% end %>
+    </div>
+    
+    <!-- Action buttons -->
+    <div class="position-absolute top-0 end-0 m-3">
+      <div class="btn-group" role="group">
+        <%= link_to edit_plant_path(@plant), class: "btn btn-light btn-sm" do %>
+          <i class="bi bi-pencil"></i>
+        <% end %>
+        <%= link_to plant_path(@plant), 
+            method: :delete, 
+            data: { confirm: "Are you sure you want to remove #{@plant.display_name}?" },
+            class: "btn btn-light btn-sm" do %>
+          <i class="bi bi-trash"></i>
+        <% end %>
+      </div>
+    </div>
   </div>
-<% end %>
 
-<%= render @plant %>
+  <!-- Plant Info Cards -->
+  <div class="container mt-4">
+    <div class="row g-4">
+      <!-- Plant Stats -->
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body">
+            <h5 class="card-title">📊 Plant Stats</h5>
+            <div class="row text-center">
+              <div class="col-4">
+                <div class="h4 text-success mb-1"><%= @plant.age_in_months %></div>
+                <div class="small text-muted">Months Old</div>
+              </div>
+              <div class="col-4">
+                <div class="h4 text-primary mb-1"><%= @plant.active_reminders.count %></div>
+                <div class="small text-muted">Active Reminders</div>
+              </div>
+              <div class="col-4">
+                <div class="h4 text-info mb-1"><%= @plant.journal_entries.count %></div>
+                <div class="small text-muted">Journal Entries</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-<div class="card"> 
-  <div class="card-body">
-    <%= link_to "✏ Edit plant", edit_plant_path(@plant), class: "m-2 btn btn-outline-success btn-sm" %>
-    <%= button_to "🗑 Destroy plant", plant_path(@plant), method: :delete, class: "m-2 btn btn-outline-danger btn-sm " %>
+      <!-- Care Guide -->
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body">
+            <h5 class="card-title">🌱 Care Guide</h5>
+            <p class="card-text small"><%= @plant.plant_species.care_guide %></p>
+            <div class="mt-auto">
+              <small class="text-muted">
+                <strong>Scientific Name:</strong> <%= @plant.plant_species.scientific_name %>
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body">
+            <h5 class="card-title">⚡ Quick Actions</h5>
+            <div class="d-grid gap-2">
+              <%= link_to new_plant_journal_entry_path(@plant), class: "btn btn-outline-success btn-sm" do %>
+                <i class="bi bi-plus-circle"></i> Add Journal Entry
+              <% end %>
+              <%= link_to new_plant_reminder_path(@plant), class: "btn btn-outline-warning btn-sm" do %>
+                <i class="bi bi-bell"></i> Set Reminder
+              <% end %>
+              <%= link_to plant_journal_entries_path(@plant), class: "btn btn-outline-info btn-sm" do %>
+                <i class="bi bi-journal-text"></i> View Journal
+              <% end %>
+              <%= link_to plant_reminders_path(@plant), class: "btn btn-outline-primary btn-sm" do %>
+                <i class="bi bi-clock"></i> View Reminders
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Plant Details -->
+    <div class="row mt-4">
+      <div class="col-12">
+        <div class="card border-0 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">📝 Plant Details</h5>
+            <div class="row">
+              <div class="col-md-6">
+                <p><strong>Name:</strong> <%= @plant.name %></p>
+                <p><strong>Type:</strong> <%= @plant.plant_species.common_name %></p>
+                <p><strong>Acquired:</strong> <%= @plant.acquired_on.strftime("%B %d, %Y") %></p>
+              </div>
+              <div class="col-md-6">
+                <p><strong>Status:</strong> 
+                  <% if @plant.is_public? %>
+                    <span class="badge bg-success">Public</span>
+                  <% else %>
+                    <span class="badge bg-secondary">Private</span>
+                  <% end %>
+                </p>
+                <p><strong>Age:</strong> <%= @plant.age_in_days %> days old</p>
+                <p><strong>Last Updated:</strong> <%= @plant.updated_at.strftime("%B %d, %Y") %></p>
+              </div>
+            </div>
+            
+            <% if @plant.notes.present? %>
+              <div class="mt-3">
+                <strong>Notes:</strong>
+                <p class="mb-0"><%= @plant.notes %></p>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="row mt-4">
+      <div class="col-12">
+        <div class="card border-0 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">📅 Recent Activity</h5>
+            
+            <% if @journal_entries.any? || @reminders.any? || @health_checks.any? %>
+              <div class="timeline">
+                <% (@journal_entries + @reminders + @health_checks).sort_by(&:created_at).reverse.first(5).each do |activity| %>
+                  <div class="d-flex mb-3">
+                    <div class="flex-shrink-0 me-3">
+                      <% if activity.is_a?(JournalEntry) %>
+                        <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                          📝
+                        </div>
+                      <% elsif activity.is_a?(Reminder) %>
+                        <div class="bg-warning text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                          ⏰
+                        </div>
+                      <% elsif activity.is_a?(PlantHealthCheck) %>
+                        <div class="bg-info text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                          🔍
+                        </div>
+                      <% end %>
+                    </div>
+                    <div class="flex-grow-1">
+                      <div class="fw-bold">
+                        <% if activity.is_a?(JournalEntry) %>
+                          Journal Entry
+                        <% elsif activity.is_a?(Reminder) %>
+                          Reminder: <%= activity.title %>
+                        <% elsif activity.is_a?(PlantHealthCheck) %>
+                          Health Check
+                        <% end %>
+                      </div>
+                      <div class="text-muted small">
+                        <%= activity.created_at.strftime("%B %d, %Y at %I:%M %p") %>
+                      </div>
+                    </div>
+                  </div>
+                <% end %>
+              </div>
+            <% else %>
+              <p class="text-muted">No recent activity. Start by adding a journal entry or setting a reminder!</p>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
-
-<br>
-<%= link_to "Back to plants", plants_path, class: "btn btn-outline-primary btn-sm"%>

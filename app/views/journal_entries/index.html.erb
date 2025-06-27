@@ -1,0 +1,109 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h1 class="h2 mb-1">
+        <% if @plant %>
+          📝 <%= @plant.name %>'s Journal
+        <% else %>
+          📝 My Plant Journal
+        <% end %>
+      </h1>
+      <p class="text-muted mb-0">
+        <% if @plant %>
+          Track the journey of your <%= @plant.name.downcase %>
+        <% else %>
+          All your plant care memories in one place
+        <% end %>
+      </p>
+    </div>
+    <%= link_to @plant ? new_plant_journal_entry_path(@plant) : "/journal/new", class: "btn btn-success" do %>
+      <i class="bi bi-plus-lg"></i> New Entry
+    <% end %>
+  </div>
+
+  <% if @journal_entries.any? %>
+    <div class="row">
+      <% @journal_entries.each do |entry| %>
+        <div class="col-12 mb-3">
+          <div class="card journal-card fade-in">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <div class="d-flex align-items-center">
+                  <div class="entry-type-badge me-3">
+                    <% case entry.entry_type %>
+                    <% when 'note' %>
+                      <i class="bi bi-journal-text text-primary"></i>
+                    <% when 'photo' %>
+                      <i class="bi bi-camera text-info"></i>
+                    <% when 'milestone' %>
+                      <i class="bi bi-star text-warning"></i>
+                    <% when 'health_check' %>
+                      <i class="bi bi-heart-pulse text-danger"></i>
+                    <% else %>
+                      <i class="bi bi-journal-text text-muted"></i>
+                    <% end %>
+                  </div>
+                  <div>
+                    <h5 class="card-title mb-1"><%= entry.display_title %></h5>
+                    <% if entry.plant && !@plant %>
+                      <small class="text-muted">
+                        <i class="bi bi-flower1"></i> <%= entry.plant.name %>
+                      </small>
+                    <% end %>
+                  </div>
+                </div>
+                <div class="dropdown">
+                  <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="dropdown">
+                    <i class="bi bi-three-dots"></i>
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li><%= link_to "View", journal_entry_path(entry), class: "dropdown-item" %></li>
+                    <li><%= link_to "Edit", edit_journal_entry_path(entry), class: "dropdown-item" %></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><%= link_to "Delete", journal_entry_path(entry), method: :delete, data: { confirm: "Are you sure?" }, class: "dropdown-item text-danger" %></li>
+                  </ul>
+                </div>
+              </div>
+              
+              <p class="card-text text-muted mb-3">
+                <%= truncate(entry.content, length: 150) %>
+              </p>
+              
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                  <small class="text-muted me-3">
+                    <i class="bi bi-calendar3"></i>
+                    <%= entry.created_at.strftime("%b %d, %Y") %>
+                  </small>
+                  <% if entry.has_photo? %>
+                    <small class="text-muted">
+                      <i class="bi bi-camera"></i> Has photo
+                    </small>
+                  <% end %>
+                </div>
+                <div class="entry-meta">
+                  <span class="badge bg-light text-dark">
+                    <%= entry.entry_type.humanize %>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="text-center py-5">
+      <div class="mb-4">
+        <i class="bi bi-journal-text display-1 text-muted"></i>
+      </div>
+      <h3 class="text-muted mb-3">No journal entries yet</h3>
+      <p class="text-muted mb-4">
+        Start documenting your plant care journey by creating your first journal entry.
+      </p>
+      <%= link_to @plant ? new_plant_journal_entry_path(@plant) : "/journal/new", class: "btn btn-success btn-lg" do %>
+        <i class="bi bi-plus-lg"></i> Create First Entry
+      <% end %>
+    </div>
+  <% end %>
+</div>
